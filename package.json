@@ -11,5 +11,8 @@
   ],
   "author": "Castor1983",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
