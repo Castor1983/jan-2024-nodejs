@@ -17,6 +17,19 @@ const foo = async () => {
     await fs.writeFile(path.join(folderPath, file), 'say Hello')
    }))
   }))
+  const folders = await fs.readdir(baseFolderPath)
+  for (const folder of folders){
+   const folderPath = path.join(baseFolderPath, folder)
+   const stat = await fs.stat(folderPath)
+   console.log(`${folderPath} isDirectory: ${stat.isDirectory()}`)
+
+   const files = await fs.readdir(path.join(baseFolderPath, folder))
+   for (const file of files){
+    const filePath = path.join(folderPath, file)
+    const stat = await fs.stat(filePath)
+    console.log(`${filePath} isDirectory: ${stat.isDirectory()}`)
+   }
+  }
  } catch (e) {
   console.error(e.message)
  }
