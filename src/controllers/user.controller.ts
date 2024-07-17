@@ -18,6 +18,15 @@ class UserController {
             next(e)
         }
     }
+    public async update(req: Request, res: Response, next: NextFunction) {
+        try{
+            const dto = req.body as any
+            const result = await userService.update(dto);
+            res.json(result);
+        }catch (e){
+            next(e)
+        }
+    }
     public async getById (req: Request, res: Response, next: NextFunction) {
         try {
             const userId = Number(req.params.userId);
