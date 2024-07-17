@@ -25,15 +25,11 @@ class UserRepository {
     public async update (userId: number, dto: IUser): Promise<IUser> {
 
         const users = await fsService.read();
-        const index = users.findIndex((user) =>user.email === dto.email)
-        if (index !== -1) {
-            throw new ApiError ('User with this email already exists', 409)
-        }
+
         const user = users.find((user) => user.id === userId);
         if (!user) {
             throw new ApiError("User not found", 422);
         }
-
         if (dto.name) user.name = dto.name;
         if (dto.email) user.email = dto.email;
         if (dto.age) user.age = dto.age;
