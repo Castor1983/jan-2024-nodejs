@@ -21,7 +21,7 @@ class UserService {
         }
         return await userRepository.create(dto);
     }
-    public async update (dto: IUser): Promise<IUser> {
+    public async update (userId: number,dto: IUser): Promise<IUser> {
         const { name, email, age } = dto;
         if (!name || name.length < 3) {
             throw new ApiError(
@@ -35,7 +35,7 @@ class UserService {
         if (!age || age < 0 && age > 110) {
             throw new ApiError("Age will be more then 0", 400,);
         }
-        return await userRepository.update(dto);
+        return await userRepository.update(userId, dto);
     }
     public async getById(userId: number): Promise<IUser> {
 return await userRepository.getById(userId);

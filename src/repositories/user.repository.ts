@@ -22,21 +22,24 @@ class UserRepository {
         await fsService.write(users)
         return (newUser)
     }
-    public async update (dto: IUser): Promise<IUser> {
+    public async update (userId: number, dto: IUser): Promise<IUser> {
 
         const users = await fsService.read();
         const index = users.findIndex((user) =>user.email === dto.email)
         if (index !== -1) {
             throw new ApiError ('User with this email already exists', 409)
         }
-        const newUser = {
-            name: dto.name,
-            email: dto.email,
-            age: dto.age
+        const user = users.find((user) => user.id === userId);
+        if (!user) {
+            throw new ApiError("User not found", 422);
         }
-        users.push(newUser)
-        await fsService.write(users)
-        return (newUser)
+
+        if (dto.name) user.name = dto.name;
+        if (dto.email) user.email = dto.email;
+        if (dto.age) user.age = dto.age;
+
+        await fsService.write(users);
+        return user
     }
     public async getById (userId: number): Promise<IUser> {
         const users = await fsService.read();
