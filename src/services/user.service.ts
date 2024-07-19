@@ -19,13 +19,13 @@ class UserService {
 
         return await userRepository.create(dto);
     }
-    public async update (userId: number,dto: IUser): Promise<IUser> {
+    public async update (userId: string,dto: IUser): Promise<IUser> {
         return await userRepository.update(userId, dto);
     }
-    public async getById(userId: number): Promise<IUser> {
+    public async getById(userId: string): Promise<IUser> {
 return await userRepository.getById(userId);
     }
-    public async deleteById(userId: number): Promise<void> {
+    public async deleteById(userId: string): Promise<void> {
         return await userRepository.deleteById(userId);
     }
 }
