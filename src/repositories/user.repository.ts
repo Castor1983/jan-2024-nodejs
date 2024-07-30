@@ -2,6 +2,9 @@
 import {IUser} from '../interfaces/user.interface'
 import {UserModel} from "../models/user.model";
 class UserRepository {
+    public async getByParams (params: Partial<IUser>): Promise<IUser> {
+        return await UserModel.findOne(params)
+    }
     public async getList (): Promise<IUser[]> {
         return await UserModel.find();
     }
@@ -11,7 +14,7 @@ class UserRepository {
     }
     public async update (userId: string, dto: IUser): Promise<IUser> {
 
-        return await UserModel.findByIdAndUpdate(userId, dto);
+        return await UserModel.findByIdAndUpdate(userId, dto, {returnDocument: 'after'});
 
     }
     public async getById (userId: string): Promise<IUser> {
@@ -19,6 +22,6 @@ class UserRepository {
 
 }
 public async deleteById (userId: string): Promise<void> {
-    return await UserModel.findByIdAndDelete(userId);
+    return await UserModel.findByIdAndDelete({_id: userId});
 }}
 export const userRepository = new UserRepository();
