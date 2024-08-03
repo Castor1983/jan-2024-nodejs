@@ -10,20 +10,12 @@ class UserController {
             next(e)
         }
     }
-    public async create(req: Request, res: Response, next: NextFunction) {
+
+    public async updateMe (req: Request, res: Response, next: NextFunction)  {
         try{
+            const userId = req.res.locals.jwtPayload.userId as string
             const dto = req.body as IUser
-            const result = await userService.create(dto);
-            res.status(201).json(result);
-        }catch (e){
-            next(e)
-        }
-    }
-    public async update(req: Request, res: Response, next: NextFunction)  {
-        try{
-            const userId = req.params.userId;
-            const dto = req.body as IUser
-            const result = await userService.update( userId, dto);
+            const result = await userService.updateMe( userId, dto);
             res.status(200).json(result);
         }catch (e){
             next(e)
@@ -38,10 +30,19 @@ class UserController {
             next(e)
         }
     }
-    public async deleteById (req: Request, res: Response, next: NextFunction) {
+    public async getMe (req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = req.params.userId;
-            await userService.deleteById(userId)
+            const userId = req.res.locals.jwtPayload.userId as string
+            const result = await userService.getById(userId)
+            res.json(result)
+        }catch (e){
+            next(e)
+        }
+    }
+    public async deleteMe (req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.res.locals.jwtPayload.userId as string
+            await userService.deleteMe(userId)
             res.sendStatus(204)
         }catch (e){
             next(e)
