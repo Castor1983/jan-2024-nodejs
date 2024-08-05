@@ -3,6 +3,8 @@ import {ApiError} from "../errors/api-errors";
 import {tokenService} from "../services/token.service";
 import {tokenRepository} from "../repositories/token.repository";
 import {TokenTypeEnum} from "../enums/token-type.enum";
+import {ActionTokenTypeEnum} from "../enums/action-token-type.enum";
+import {actionTokenRepository} from "../repositories/action-token.repository";
 
 class AuthMiddleware {
     public async checkAccessToken(req: Request, res: Response, next: NextFunction) {
@@ -43,6 +45,27 @@ class AuthMiddleware {
             next();
         } catch (e) {
             next(e)
+        }
+    }
+    public checkActionToken(type: ActionTokenTypeEnum) {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const actionToken = req.body?.token;
+                if (!actionToken) {
+                    throw new ApiError("Token is not provided", 401);
+                }
+                const payload = tokenService.checkActionToken(actionToken, type);
+                const entity = await actionTokenRepository.getByActionToken(actionToken)
+
+
+                if (!entity) {
+                    throw new ApiError("Token is not valid", 401);
+                }
+                req.res.locals.jwtPayload = payload;
+                next();
+            } catch (e) {
+                next(e)
+            }
         }
     }
 }

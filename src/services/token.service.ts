@@ -3,6 +3,7 @@ import {configs} from "../configs/configs";
 import {ITokenPair, ITokenPayload} from "../interfaces/token.interface";
 import {ApiError} from "../errors/api-errors";
 import {TokenTypeEnum} from "../enums/token-type.enum";
+import {ActionTokenTypeEnum} from "../enums/action-token-type.enum";
 
 class TokenService {
     public async generatePair (payload: ITokenPayload): Promise<ITokenPair> {
@@ -37,24 +38,34 @@ class TokenService {
             throw new ApiError("Token is not valid", 401);
         }
     }
-    public async generateActionToken (payload: ITokenPayload): Promise<ITokenPair> {
-        const accessToken = jsonwebtoken.sign(payload, configs.JWT_ACCESS_SECRET, {expiresIn: configs.JWT_ACCESS_EXPIRES_IN});
-        const refreshToken = jsonwebtoken.sign(payload, configs.JWT_REFRESH_SECRET, {expiresIn: configs.JWT_REFRESH_EXPIRES_IN});
+    public async generateActionToken (payload: ITokenPayload, type: ActionTokenTypeEnum): Promise<string> {
+        let secret: string;
+        let expiresIn: string;
+        switch (type) {
+            case ActionTokenTypeEnum.FORGOT_PASSWORD :
+                secret = configs.JWT_ACTION_FORGOT_PASSWORD_SECRET
+                expiresIn = configs.JWT_ACTION_FORGOT_PASSWORD_EXPIRES_IN
+                break;
+            case ActionTokenTypeEnum.VERIFY_EMAIL :
+                secret = configs.JWT_ACTION_VERIFY_EMAIL_SECRET
+                expiresIn = configs.JWT_ACTION_VERIFY_EMAIL_EXPIRES_IN
+                break;
 
-        return {
-            accessToken,
-            refreshToken
-        };
+            default:
+                throw new ApiError('Token type is not valid', 401)
+
+        }
+return jsonwebtoken.sign(payload, secret, {expiresIn})
     }
-    public checkActionToken(token: string, type: TokenTypeEnum): ITokenPayload {
+    public checkActionToken(token: string, type: ActionTokenTypeEnum): ITokenPayload {
         try {
             let secret: string
             switch (type) {
-                case TokenTypeEnum.ACCESSS :
-                    secret = configs.JWT_ACCESS_SECRET
+                case ActionTokenTypeEnum.FORGOT_PASSWORD :
+                    secret = configs.JWT_ACTION_FORGOT_PASSWORD_SECRET
                     break;
-                case TokenTypeEnum.REFRESH :
-                    secret = configs.JWT_REFRESH_SECRET
+                case ActionTokenTypeEnum.VERIFY_EMAIL :
+                    secret = configs.JWT_ACTION_VERIFY_EMAIL_SECRET
                     break;
                 default:
                     throw new ApiError('Token type is not valid', 401)

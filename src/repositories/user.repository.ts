@@ -13,7 +13,7 @@ class UserRepository {
         return await UserModel.create(dto);
 
     }
-    public async updateMe (userId: string, dto: IUser): Promise<IUser> {
+    public async updateMe (userId: string, dto: Partial<IUser>): Promise<IUser> {
 
         return await UserModel.findByIdAndUpdate(userId, dto, {returnDocument: 'after'});
 
