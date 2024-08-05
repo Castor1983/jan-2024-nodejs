@@ -2,7 +2,7 @@ import {RoleEnum} from "../enums/role.enum";
 
 export interface IUser {
     _id?: string;
-    name: number,
+    name: string,
     age: string,
     email: string,
     password: string,
@@ -12,3 +12,4 @@ export interface IUser {
     createDat?: Date,
     updateDat?: Date
 }
+export interface ILogin extends Pick<IUser, 'email' | 'password'> {}

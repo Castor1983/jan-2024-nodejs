@@ -11,8 +11,11 @@ class TokenRepository {
         return await TokenModel.create(dto);
 
     }
-    public async deleteById (oldTokensId: string): Promise<void> {
-        return await  TokenModel.findByIdAndDelete(oldTokensId)
+    public async deleteById (id: string): Promise<void> {
+         await  TokenModel.deleteOne({_id: id})
+    }
+    public async deleteByParams (params: FilterQuery<IToken>): Promise<void> {
+        await  TokenModel.deleteMany(params)
     }
 
 }

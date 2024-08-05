@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express'
 import {authService} from '../services/auth.service'
-import {IUser} from "../interfaces/user.interface";
+import {ILogin, IUser} from "../interfaces/user.interface";
 import {ITokenPayload} from "../interfaces/token.interface";
 class AuthController {
 
@@ -13,9 +13,10 @@ class AuthController {
             next(e)
         }
     }
+
     public async signIn(req: Request, res: Response, next: NextFunction) {
         try {
-            const dto = req.body as any;
+            const dto = req.body as ILogin;
             const result = await authService.signIn(dto);
             res.status(201).json(result);
         } catch (e) {
@@ -33,5 +34,39 @@ class AuthController {
             next(e);
         }
     }
+
+    public async logoutAll(req: Request, res: Response, next: NextFunction) {
+        try {
+            const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+
+            await authService.logoutAll(jwtPayload);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async logout(req: Request, res: Response, next: NextFunction) {
+        try {
+            const tokensId = req.res.locals.tokensId as string;
+            const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+            await authService.logout(jwtPayload, tokensId );
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async forgotPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const jwtPayload = req.body;
+
+            await authService.forgotPassword(jwtPayload);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
+
 }
 export const authController = new AuthController()
